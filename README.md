@@ -4,7 +4,7 @@ This is a SN76489-based sound card for the RC2014.  It is a very simple chip, on
 
 The board can optionally support two chips for 6 channel stereo sound.  If stereo sound is not desired, then the second chip can be omitted.  
 
-The board uses two 138 decoders and a set of jumpers to fully decode the address, but the second decoder can be omitted if desired.  With only one decoder, each chip will occupy 32 addresses.  With two decoders, each chip can be assigned to a single, specific address.  Each chip's address can be configured via jumpers.  If using the second decoder, both chips must be assigned a specific address within the same 32 address range.
+The board uses two 138 decoders and a set of jumpers to decode the address, but the second decoder can be omitted if desired.  With only one decoder, each chip will occupy 32 addresses.  With two decoders, the decoding can be narrowed to a range of 4 addresses per chip.  Each chip's address can be individually configured via jumpers.  If using the second decoder, both chips must be assigned a 4 address range within the same 32 address block.
 
 Currently I have tested this circuit on a breadboard but I have not manufactured the PCBs yet.
 
@@ -13,17 +13,13 @@ Currently I have tested this circuit on a breadboard but I have not manufactured
 - J6/J7 configure the left chip, and J8/J9 configure the right chip.
 - J7/J9 selects the top 3 bits of the address, with the following ranges, from top to bottom: 00-1F, 20-3F, 40-5F, 60-7F, 80-9F, A0-BF, C0-DF, E0-FF
 - J6/J8 selects the next 3 bits of the address. In the bottom position, the second decoder is not used, so the full 32-address range will match. Each of the upper 8 positions selects a range of 4 addresses: X0-X3, X4-X7, X8-XB, XC-XF, Y0-Y3, Y4-Y7, Y8-YB, and YC-YF, where X is the lower half and Y is the upper half of the 32-address range selected by J7/J9.
-- J3 and J4 restrict the address based on A0 and A1. There are only 3 valid configurations of J3 and J4:
-    - J3 top, J4 middle: match the second address in the 4-address range. In other words, address XXXYYY01
-    - J3 middle, J4 top: match the third address in the 4-address range. In other words, address XXXYYY10
-    - J3 bottom, J4 bottom: match any address in the 4-address range.
+- J8 has one additional jumper in the topmost position which completely disables the right chip.
 
 A few examples:
 
 - For the full ColecoVision address range: all jumpers in the bottom position (Both chips E0-FF). Set jumper to mono to ignore second chip.
-- For ColecoVision compatibliity with most games using a smaller address range:  J3/J4 in the bottom position, J7 in the bottom position, J9 doesn't matter, J6 in position 8, J8 in position 7.  (Left chip FC-FF, Right chip F8-FB)
-- For Sord M5 compatibility J3/J4 in bottom position, J7/J9 in position 2, J6 in position 1, J8 in position 2 (Left chip 20-23, Right chip 24-27).
-- For a single address per chip: J3 in top, J4 in middle, J7 in the bottom position, J9 doesn't matter, J6 in position 8, J8 in position 7.  (Left chip FD, Right chip F9)
+- For ColecoVision compatibility with most games using a smaller address range:  J7 in the bottom position, J9 doesn't matter, J6 in position 8, J8 in position 7.  (Left chip FC-FF, Right chip F8-FB)
+- For Sord M5 compatibility J7/J9 in position 2, J6 in position 1, J8 in position 2 (Left chip 20-23, Right chip 24-27).
 
 ## Resources
 
