@@ -2,30 +2,69 @@
 
 This is a SN76489-based sound card for the RC2014.  It is a very simple chip, only capable of producing square waves and a noise channel, without any envelope control or filters. This chip was used in the TI-99/4A, ColecoVision, Sega SG-1000, Sega Master System, and Sega Genesis, IBM PCjr and Tandy-compatibles, BBC Micro, as well as many arcade games.
 
-The board can optionally support two chips for 6 channel stereo sound.  If stereo sound is not desired, then the second chip can be omitted.  
+The board can optionally support two SN76489 chips for 6 channel stereo sound, but currently this is unsupported by any software.  If stereo sound is not desired, then the second chip and its supporting components can be omitted.  
 
-The board uses two 138 decoders and a set of jumpers to decode the address, but the second decoder can be omitted if desired.  With only one decoder, each chip will occupy 32 addresses.  With two decoders, the decoding can be narrowed to a range of 4 addresses per chip.  Each chip's address can be individually configured via jumpers.  If using the second decoder, both chips must be assigned a 4 address range within the same 32 address block.
+## Addresses Configuration
 
-Currently I have tested this circuit on a breadboard but I have not manufactured the PCBs yet.
+The board uses two 138 decoders and a set of jumpers to decode the addresses for the sound chips, but the second decoder can be omitted if tight decoding is not required.  With only one decoder, each chip will occupy 32 addresses.  With two decoders, the decoding can be narrowed to a range of 4 addresses per chip.  Each chip's address can be individually configured via jumpers.  If using the second decoder, both chips must be assigned a 4 address range within the same 32 address block.
 
-## Addresses Decoding
-
-- J6/J7 configure the left chip, and J8/J9 configure the right chip.
-- J7/J9 selects the top 3 bits of the address, with the following ranges, from top to bottom: 00-1F, 20-3F, 40-5F, 60-7F, 80-9F, A0-BF, C0-DF, E0-FF
-- J6/J8 selects the next 3 bits of the address. In the bottom position, the second decoder is not used, so the full 32-address range will match. Each of the upper 8 positions selects a range of 4 addresses: X0-X3, X4-X7, X8-XB, XC-XF, Y0-Y3, Y4-Y7, Y8-YB, and YC-YF, where X is the lower half and Y is the upper half of the 32-address range selected by J7/J9.
-- J8 has one additional jumper in the topmost position which completely disables the right chip.
+- **J6** and **J7** configure the left chip, and **J8** and **J9** configure the right chip.
+- **J7** and **J9** select the top 3 bits of the address, with the following ranges, from top to bottom: 00-1F, 20-3F, 40-5F, 60-7F, 80-9F, A0-BF, C0-DF, E0-FF
+- **J6** and **J8** select the next 3 bits of the address. In the bottom position, the second decoder is not used, so the full 32-address range will match. Each of the 8 positions selects a range of 4 addresses: X0-X3, X4-X7, X8-XB, XC-XF, Y0-Y3, Y4-Y7, Y8-YB, and YC-YF, where X is the lower half and Y is the upper half of the 32-address range selected by **J7**. **J8** has one additional jumper in the topmost position which completely disables the right chip.
+- **JP2** selects mono (left) or stereo (right) operation.  In mono mode, the left chip is connected to both left and right channels on the audio jack.
 
 A few examples:
 
-- For the full ColecoVision address range: all jumpers in the bottom position (Both chips E0-FF). Set jumper to mono to ignore second chip.
-- For ColecoVision compatibility with most games using a smaller address range:  J7 in the bottom position, J9 doesn't matter, J6 in position 8, J8 in position 7.  (Left chip FC-FF, Right chip F8-FB)
-- For Sord M5 compatibility J7/J9 in position 2, J6 in position 1, J8 in position 2 (Left chip 20-23, Right chip 24-27).
+- For the full ColecoVision address range: **J7** and **J9** in the bottom position. **J8** in the topmost position. This sets the left chip to E0-FF and disables the right chip. Set **JP2** to mono (left).
+- For ColecoVision compatibility with most games while using a tighter address range:  **J7** in the bottom position, **J9** doesn't matter, **J6** in position 8, and **J8** in position 8 (counting from the top).  This sets the left chip to FC-FF and the right chip F8-FB.  **J8** can also be set to the topmost position to disable the right chip.  Most ColecoVision games use FF to access the sound chip but it's possible some games may use ports outside of this range.  Set **JP2** to mono (left) when playing ColecoVision games or to stereo (right) if you want use software that supports both chips.
+
+## Clock Configuration
+
+A 74HCT74 is used to optionally divide the incoming clock by 2 or 4. The maximum clock frequency supported by the SN76489 is 4MHz, so the divider must be used if the incoming clock frequency is higher than that.
+
+- **JP1** selects the clock source from the RC2014 bus. The lower position selects CLK1 and the upper position selects CLK2.
+- **J11** selects the clock divider: /1 (left), /2 (middle) or /4 (right).
+
+The input clock frequency affects the frequency of the tones generated by the sound chip. If you change the input clock frequency, you will need to adjust the note tables in your software to compensate.  Refer to the SN76489 manual for details.
+
+## Bill of Materials
+
+All parts except for the SN76489 are available from Mouser.  The SN76489 can be obtained from eBay.
+
+| Reference | Part |
+|-|-|
+| J1, J5 | 2x40 right angle pin header with extra pins removed from top row |
+| JP1, JP2 | 1x3 straight pin header |
+| J7, J9* | 2x8 straight pin header |
+| J6 | 2x9 straight pin header |
+| J8* | 2x10 straight pin header |
+| J11 | 2x3 stright pin header |
+| | Jumper blocks for each jumper (9 total) |
+| J2 | CUI SJ1-3523N audio jack |
+| C1-C3, C6-C7 | 0.1uf ceramic disc or MLCC capacitor |
+| C4, C5* | 470 uf electrolytic capacitor |
+| U2, U3** | 74HCT138 3-8 line decoder |
+| U1, U4* | TI SN76489 sound chip |
+| U5*** | 74HCT74 dual D-type flip-flop |
+
+Some components are optional: 
+
+*U4, C3, C5, J8 and J9 can be omitted if you do not want stereo sound. 
+
+**U3 and C2 can be omitted if you don't need tight address decoding.
+
+***U5 and C6 can be omitted if you don't need a clock divider.
 
 ## Resources
 
 - [SN76489 Manual](http://www.vgmpf.com/Wiki/images/7/78/SN76489AN_-_Manual.pdf)
-- [rc9918](https://github.com/jblang/rc9918): my other RC2014 project can be used with this board to build a ColecoVision.
-- [z80ctrl](https://github.com/jblang/z80ctrl): my other RC2014 project used to emulate ColecoVision controllers.
+- [ColecoVision Programming Info](http://www.atarihq.com/danb/files/CV-Tech.txt)
+
+## Other Boards
+
+- [TMS9918A Video Card](https://github.com/jblang/rc9918): my TMS9918A video card for the RC2014 
+- [Game Controller Card](https://github.com/jblang/GameController): my Atari/Sega/Coleco-compatible controller interface board for the RC2014
+- [z80ctrl](https://github.com/jblang/z80ctrl): my RC2014 bus monitor board for the RC2014
 
 ## License
 
