@@ -58,13 +58,14 @@ Some components are optional:
 ## Resources
 
 - [SN76489 Manual](http://www.vgmpf.com/Wiki/images/7/78/SN76489AN_-_Manual.pdf)
-- [ColecoVision Programming Info](http://www.atarihq.com/danb/files/CV-Tech.txt)
+- [SN76489 Development](http://www.smspower.org/Development/SN76489)
+- [The Z80 and the SN76489](https://bumbershootsoft.wordpress.com/2018/03/24/genesis-the-z80-and-the-sn76489/)
 
 ## Other Boards
 
 - [TMS9918A Video Card](https://github.com/jblang/rc9918): my TMS9918A video card for the RC2014 
 - [Game Controller Card](https://github.com/jblang/GameController): my Atari/Sega/Coleco-compatible controller interface board for the RC2014
-- [z80ctrl](https://github.com/jblang/z80ctrl): my RC2014 bus monitor board for the RC2014
+- [z80ctrl](https://github.com/jblang/z80ctrl): my AVR-based bus monitor and bootloader board for the RC2014
 
 ## License
 
