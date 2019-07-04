@@ -30,12 +30,12 @@
    DEALINGS IN THE SOFTWARE.
 }
 program music;
-{uses crt;} { <-- uncomment for Turbo Pascal 7.0 }
+{uses crt;} { required for Turbo Pascal 4 and greater }
 
 const
    { update these values for other systems }
    muxport = $61;      { port to control audio mux on PCjr }
-   psgport = $c0;      { port to control SN76489 PSG on PCjr }
+   {psgport = $c0;}      { port to control SN76489 PSG on PCjr }
    psgport = $fe;      { port to control SN76489 PSG on RC2014 }
    refclk = 3579000.0; { input clock rate for PSG on PCjr  }
 
@@ -120,16 +120,20 @@ begin
 end;
 
 { play a music macro string using GW-BASIC syntax }
-procedure play(song: songtype);
+procedure play(song: songtype; channel: chantype);
 
 var
    i: integer;
    j: integer;
+   c: char;
    pitch: integer;
-   fraction: integer;
+   deflen: integer;
+   len: integer;
    articulation: real;
+   duration: real;
    octave: integer;
    tempo: integer;
+   volume: integer;
    script: array[1..1024] of integer;
 
    { parse a number from the song string }
@@ -138,127 +142,145 @@ var
    begin
       output := 0;
       parsenum := false;
-      while i < length(song) do
+      while i <= length(song) do
       begin
-         i := i + 1;
          if (song[i] < '0') or (song[i] > '9') then
-         begin
-            i := i - 1;
             goto stop;
-         end;
          parsenum := true;
          output := 10 * output + integer(song[i]) - integer('0');
+         i := i + 1;
       end;
       stop:
-   end;
-
-   function duration: real;
-   var
-      tempfraction: integer;
-   begin
-      if not parsenum(tempfraction) then
-         tempfraction := fraction;
-      duration := (60.0 / tempo) * (4.0 / tempfraction) * 1000;
    end;
 
 begin
    { set defaults }
    pitch := 0;
-   fraction := 4;
+   deflen := 4;
    octave := 4;
    articulation := 7.0 / 8.0;
    tempo := 120;
+   volume := 8;
    j := 1;
    i := 1;
 
    { compile music expression into array of pokes and delays }
    while i <= length(song) do
    begin
-      case upcase(song[i]) of
-         'A'..'G', 'N': { note }
+      c := upcase(song[i]);
+      i := i + 1;
+      case c of
+         'A'..'G', 'N', 'P': { note }
             begin
-               if upcase(song[i]) = 'N' then
-               begin
-                  { note specified as number }
-                  if not parsenum(pitch) then
-                     writeln('Error parsing pitch.');
-               end
+               if c = 'N' then { note specified by number }
+                  begin
+                     len := deflen; { always default length }
+                     { note specified as number }
+                     if not parsenum(pitch) then
+                        begin
+                           writeln('Error parsing pitch.');
+                           pitch := 0;
+                        end;
+                  end
                else
-               begin
-                  { note specified by name }
-                  case upcase(song[i]) of 
-                     'C': pitch := 1;
-                     'D': pitch := 3;
-                     'E': pitch := 5;
-                     'F': pitch := 6;
-                     'G': pitch := 8;
-                     'A': pitch := 10;
-                     'B': pitch := 12;
-                  end;
-                  if i < length(song) then
-                     { flat }
-                     if song[i+1] = '-' then 
-                     begin
-                        pitch := pitch - 1;
-                        i := i + 1;
-                     end
-                     { sharp }
-                     else if (song[i+1] = '+') or (song[i+1] = '#') then
-                     begin
-                        pitch := pitch + 1;
-                        i := i + 1;
+                  begin
+                     { note specified by name }
+                     case c of 
+                        'P': pitch := 0;
+                        'C': pitch := 1;
+                        'D': pitch := 3;
+                        'E': pitch := 5;
+                        'F': pitch := 6;
+                        'G': pitch := 8;
+                        'A': pitch := 10;
+                        'B': pitch := 12;
                      end;
-                  pitch := pitch + octave * 12;
-               end;
-               { set tone }
-               if pitch > 0 then 
-               begin
-                  script[j] := tonelo(0, scale[pitch]);
-                  script[j+1] := tonehi(scale[pitch]);
-                  script[j+2] := vol(0, 0);
-                  j := j + 3;
-               end;
-               { wait for note duration }
-               script[j] := -round(duration * articulation); 
-               j := j + 1;
-               { pause between notes }
-               if articulation < 1 then
-               begin
-                  script[j] := vol(0, 15); 
-                  script[j+1] := -round(duration * (1 - articulation));
-                  j := j + 2;
-               end;
+
+                     { set tone }
+                     if pitch > 0 then 
+                        begin
+                           if i <= length(song) then
+                              { flat }
+                              if song[i] = '-' then 
+                                 begin
+                                    pitch := pitch - 1;
+                                    i := i + 1;
+                                 end
+                              { sharp }
+                              else if (song[i] = '+') or (song[i] = '#') then
+                                 begin
+                                    pitch := pitch + 1;
+                                    i := i + 1;
+                                 end;
+                           pitch := pitch + octave * 12;
+                        end;
+
+                     { get length, or use default }
+                     if not parsenum(len) then
+                        len := deflen;
+                  end;
+
+               { calculate number of milliseconds corresponding to note length }
+               duration := (60.0 / tempo) * (4.0 / len) * 1000;
+
+               { extend length of notes followed by . }
+               while song[i] = '.' do
+                  begin
+                     duration := duration * 3.0 / 2.0;
+                     i := i + 1;
+                  end;
+
+               if pitch > 0 then { note }
+                  begin
+                     { set tone }
+                     script[j] := tonelo(channel, scale[pitch]);
+                     script[j+1] := tonehi(scale[pitch]);
+                     script[j+2] := vol(channel, 15 - volume);
+                     j := j + 3;
+
+                     { wait for note duration }
+                     script[j] := -round(duration * articulation); 
+                     j := j + 1;
+
+                     { pause between notes }
+                     if articulation < 1 then
+                     begin
+                        script[j] := vol(channel, 15); 
+                        script[j+1] := -round(duration * (1 - articulation));
+                        j := j + 2;
+                     end;
+                  end
+               else { rest }
+                  begin
+                     script[j] := -round(duration);
+                     j := j + 1;
+                  end;
             end;
          'L': { set note length }
-            if not parsenum(fraction) then
-               writeln('Error parsing fraction.');
+            if not parsenum(deflen) then
+               writeln('Error parsing default length.');
          'M': { set articulation style }
             begin
-               if i < length(song) then
-               begin
-                  i := i + 1;
-                  case upcase(song[i]) of
-                     'L': { legato }
-                        articulation := 1;
-                     'S': { staccato }
-                        articulation := 3.0 / 4.0;
-                     'N': { normal }
-                        articulation := 7.0 / 8.0;
-                     else writeln('Error parsing articulation.');
+               if i <= length(song) then
+                  begin
+                     case upcase(song[i]) of
+                        'L': articulation := 1;            { legato }
+                        'S': articulation := 3.0 / 4.0;    { staccato }
+                        'N': articulation := 7.0 / 8.0;    { normal }
+                        else writeln('Error parsing articulation.');
+                     end;
+                     i := i + 1;
                   end;
-               end;
             end;
          'O': { set octave }
             if not parsenum(octave) then
                writeln('Error parsing octave.');
-         'P': { rest }
-            begin
-               script[j] := -round(duration);
-               j := j + 1;
-            end;
          'T': { set tempo }
             if not parsenum(tempo) then
                writeln('Error parsing tempo.');
+         'V':
+            if not parsenum(volume) then
+               writeln('Error parsing volume.');
          '>': { increase octave }
             if octave < 6 then
                octave := octave + 1;
@@ -266,25 +288,23 @@ begin
             if octave > 0 then
                octave := octave - 1;
       end;
-      i := i + 1;
    end;
 
    { execute compiled expression }
    for i := 1 to j - 1 do
-   begin
-      if script[i] < 0 then
-         delay(-script[i])
-      else if script[i] <= 255 then
-         port[psgport] := script[i];
-   end;
+      begin
+         if script[i] < 0 then
+            delay(-script[i])
+         else if script[i] <= 255 then
+            port[psgport] := script[i];
+      end;
 
    mute;
-
 end;
 
 begin
    buildscale;
    {setmux;} { comment out on RC2014 }
    mute;
-   play('mnt200o3l8a4efg4fed4dfa4gfe4efl4gafdd');
+   play('mnt200o3l8a4efg4fed4dfa4gfe4efl4gafdd', 0);
 end.
