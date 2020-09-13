@@ -145,16 +145,16 @@ Wire Wire Line
 Wire Wire Line
 	8850 3300 8900 3300
 Wire Wire Line
-	9750 4600 9500 4600
+	9850 4500 9600 4500
 $Comp
 L power:GND #PWR0110
 U 1 1 5BC7E987
-P 9500 4600
-F 0 "#PWR0110" H 9500 4350 50  0001 C CNN
-F 1 "GND" H 9500 4450 50  0000 C CNN
-F 2 "" H 9500 4600 50  0001 C CNN
-F 3 "" H 9500 4600 50  0001 C CNN
-	1    9500 4600
+P 9600 4500
+F 0 "#PWR0110" H 9600 4250 50  0001 C CNN
+F 1 "GND" H 9600 4350 50  0000 C CNN
+F 2 "" H 9600 4500 50  0001 C CNN
+F 3 "" H 9600 4500 50  0001 C CNN
+	1    9600 4500
 	-1   0    0    -1  
 $EndComp
 Text Label 8900 3800 2    50   ~ 0
@@ -230,18 +230,6 @@ F 3 "~" H 8450 3950 50  0001 C CNN
 	1    8450 3950
 	1    0    0    -1  
 $EndComp
-Text Label 5450 4350 0    60   ~ 0
-A5
-Text Label 5450 4450 0    60   ~ 0
-A6
-Text Label 5450 4550 0    60   ~ 0
-A7
-Wire Wire Line
-	5450 4350 5550 4350
-Wire Wire Line
-	5450 4450 5550 4450
-Wire Wire Line
-	5450 4550 5550 4550
 Wire Wire Line
 	5550 5050 5450 5050
 Wire Wire Line
@@ -269,18 +257,6 @@ F 3 "~" H 7500 4650 50  0001 C CNN
 	1    7500 4650
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	5450 2400 5550 2400
-Wire Wire Line
-	5450 2500 5550 2500
-Wire Wire Line
-	5450 2600 5550 2600
-Text Label 5450 2600 0    60   ~ 0
-A4
-Text Label 5450 2400 0    60   ~ 0
-A2
-Text Label 5450 2500 0    60   ~ 0
-A3
 $Comp
 L Connector_Generic:Conn_02x09_Odd_Even J6
 U 1 1 5BD1FD5C
@@ -405,8 +381,6 @@ F 3 "~" H 8100 2000 50  0001 C CNN
 	1    8100 2000
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	9750 4700 9600 4700
 $Comp
 L Device:C C6
 U 1 1 5C276060
@@ -519,13 +493,7 @@ Wire Wire Line
 Wire Wire Line
 	5550 3750 7300 3750
 Wire Wire Line
-	5200 3400 5450 3400
-Wire Wire Line
 	5200 3100 5200 2100
-Wire Wire Line
-	5200 2100 5400 2100
-Wire Wire Line
-	6050 4050 5400 4050
 Wire Wire Line
 	5100 4050 5100 4850
 Wire Wire Line
@@ -566,8 +534,6 @@ Wire Wire Line
 	8750 4700 8700 4700
 Wire Wire Line
 	8750 4700 8750 4800
-Wire Wire Line
-	8750 4800 9750 4800
 Connection ~ 8750 4700
 Wire Wire Line
 	8450 4800 8450 4900
@@ -638,27 +604,6 @@ F 3 "~" H 7500 1450 50  0001 C CNN
 	1    7500 1450
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	5550 3000 5450 3000
-Wire Wire Line
-	5450 3000 5450 3400
-Connection ~ 5450 3400
-Wire Wire Line
-	5450 3400 6050 3400
-Wire Wire Line
-	5550 2900 5400 2900
-Wire Wire Line
-	5400 2900 5400 2100
-Connection ~ 5400 2100
-Wire Wire Line
-	5400 2100 6050 2100
-Wire Wire Line
-	5400 4850 5400 4050
-Wire Wire Line
-	5400 4850 5550 4850
-Connection ~ 5400 4050
-Wire Wire Line
-	5400 4050 5100 4050
 NoConn ~ 2000 3900
 NoConn ~ 2000 3800
 NoConn ~ 2000 3500
@@ -1055,29 +1000,14 @@ Wire Wire Line
 $Comp
 L 74xx:74HCT00 U5
 U 4 1 5F6589F2
-P 1350 6900
-F 0 "U5" H 1350 7225 50  0000 C CNN
-F 1 "74HCT00" H 1350 7134 50  0000 C CNN
-F 2 "Package_DIP:DIP-14_W7.62mm" H 1350 6900 50  0001 C CNN
-F 3 "http://www.ti.com/lit/gpn/sn74hct00" H 1350 6900 50  0001 C CNN
-	4    1350 6900
+P 4000 3100
+F 0 "U5" H 4000 3425 50  0000 C CNN
+F 1 "74HCT00" H 4000 3334 50  0000 C CNN
+F 2 "Package_DIP:DIP-14_W7.62mm" H 4000 3100 50  0001 C CNN
+F 3 "http://www.ti.com/lit/gpn/sn74hct00" H 4000 3100 50  0001 C CNN
+	4    4000 3100
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	1050 6800 1050 7000
-$Comp
-L power:GND #PWR0108
-U 1 1 5F66B7B0
-P 1050 7000
-F 0 "#PWR0108" H 1050 6750 50  0001 C CNN
-F 1 "GND" H 1050 6850 50  0000 C CNN
-F 2 "" H 1050 7000 50  0001 C CNN
-F 3 "" H 1050 7000 50  0001 C CNN
-	1    1050 7000
-	1    0    0    -1  
-$EndComp
-Connection ~ 1050 7000
-NoConn ~ 1650 6900
 $Comp
 L 74xx:74HCT00 U5
 U 5 1 5F67A1C4
@@ -1133,16 +1063,144 @@ F 3 "" H 5350 6050 50  0001 C CNN
 $EndComp
 Connection ~ 5350 6050
 $Comp
-L SJ1-3523N:SJ1-3523N J2
-U 1 1 5F63224D
-P 10350 4700
-F 0 "J2" H 9920 4654 50  0000 R CNN
-F 1 "SJ1-3523N" H 9920 4745 50  0000 R CNN
-F 2 "SJ1-3523N:CUI_SJ1-3523N" H 10350 4700 50  0001 L BNN
-F 3 "1.02" H 10350 4700 50  0001 L BNN
-F 4 "Manufacturer recommendation" H 10350 4700 50  0001 L BNN "Field4"
-F 5 "CUI" H 10350 4700 50  0001 L BNN "Field5"
-	1    10350 4700
-	-1   0    0    1   
+L Connector:AudioJack3_SwitchTR J2
+U 1 1 5F5F5C28
+P 10050 4600
+F 0 "J2" H 9770 4525 50  0000 R CNN
+F 1 "AudioJack3_SwitchTR" H 9770 4434 50  0000 R CNN
+F 2 "SN76489:Headphone_Jack_3.5mm_5_pin" H 10050 4600 50  0001 C CNN
+F 3 "~" H 10050 4600 50  0001 C CNN
+	1    10050 4600
+	-1   0    0    -1  
 $EndComp
+Wire Wire Line
+	8750 4800 9850 4800
+Wire Wire Line
+	9850 4800 9850 4900
+Connection ~ 9850 4800
+Wire Wire Line
+	9600 4700 9850 4700
+Wire Wire Line
+	9850 4700 9850 4600
+Connection ~ 9850 4700
+Text Label 5450 2500 0    60   ~ 0
+A3
+Text Label 5450 2400 0    60   ~ 0
+A2
+Wire Wire Line
+	5450 2500 5550 2500
+Wire Wire Line
+	5450 2400 5550 2400
+Text Label 5450 2600 0    60   ~ 0
+A4
+Wire Wire Line
+	5450 2600 5550 2600
+Wire Wire Line
+	5450 4450 5550 4450
+Wire Wire Line
+	5450 4350 5550 4350
+Text Label 5450 4450 0    60   ~ 0
+A6
+Text Label 5450 4350 0    60   ~ 0
+A5
+Wire Wire Line
+	5450 4550 5550 4550
+Text Label 5450 4550 0    60   ~ 0
+A7
+Wire Wire Line
+	5400 4850 5550 4850
+Wire Wire Line
+	5400 4050 5100 4050
+Wire Wire Line
+	6050 4050 5400 4050
+Connection ~ 5400 4050
+Wire Wire Line
+	5400 4850 5400 4050
+Wire Wire Line
+	5200 3400 6050 3400
+Wire Wire Line
+	5200 2100 6050 2100
+Wire Wire Line
+	3600 2650 3700 2650
+Text Label 3600 2650 0    50   ~ 0
+A1
+$Comp
+L Connector_Generic:Conn_02x03_Odd_Even J3
+U 1 1 5F6AF3A0
+P 4750 3000
+F 0 "J3" H 4800 3317 50  0000 C CNN
+F 1 "A1" H 4800 3226 50  0000 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_2x03_P2.54mm_Vertical" H 4750 3000 50  0001 C CNN
+F 3 "~" H 4750 3000 50  0001 C CNN
+	1    4750 3000
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5050 2900 5050 3000
+Connection ~ 5050 3000
+Wire Wire Line
+	5050 3000 5050 3100
+Wire Wire Line
+	5050 3000 5550 3000
+Wire Wire Line
+	4300 3100 4550 3100
+Wire Wire Line
+	3700 3000 3700 2650
+Wire Wire Line
+	3700 2650 4250 2650
+Wire Wire Line
+	4250 2650 4250 3000
+Wire Wire Line
+	4250 3000 4550 3000
+Connection ~ 3700 3000
+Wire Wire Line
+	3700 3000 3700 3200
+Connection ~ 3700 2650
+$Comp
+L Jumper:Jumper_3_Open JP1
+U 1 1 5F79B7F6
+P 3950 2300
+F 0 "JP1" H 3950 2524 50  0000 C CNN
+F 1 "A0" H 3950 2433 50  0000 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical" H 3950 2300 50  0001 C CNN
+F 3 "~" H 3950 2300 50  0001 C CNN
+	1    3950 2300
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:VCC #PWR0108
+U 1 1 5F6FD285
+P 4550 2900
+F 0 "#PWR0108" H 4550 2750 50  0001 C CNN
+F 1 "VCC" H 4550 3050 50  0000 C CNN
+F 2 "" H 4550 2900 50  0001 C CNN
+F 3 "" H 4550 2900 50  0001 C CNN
+	1    4550 2900
+	1    0    0    -1  
+$EndComp
+Text Label 3600 2300 0    50   ~ 0
+A0
+Wire Wire Line
+	3600 2300 3700 2300
+Wire Wire Line
+	3950 2450 3950 2600
+Wire Wire Line
+	3950 2600 5250 2600
+Wire Wire Line
+	5250 2600 5250 2900
+Wire Wire Line
+	5250 2900 5550 2900
+$Comp
+L power:VCC #PWR0113
+U 1 1 5F7E10DF
+P 4200 2200
+F 0 "#PWR0113" H 4200 2050 50  0001 C CNN
+F 1 "VCC" H 4200 2350 50  0000 C CNN
+F 2 "" H 4200 2200 50  0001 C CNN
+F 3 "" H 4200 2200 50  0001 C CNN
+	1    4200 2200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4200 2300 4200 2200
 $EndSCHEMATC
