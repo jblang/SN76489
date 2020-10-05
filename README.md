@@ -9,7 +9,7 @@ The board can optionally support two SN76489 chips for 6 channel stereo sound, b
 
 [Ready-to-Assemble Kits](https://www.tindie.com/products/mfkamprath/sn76489-sound-card-kit-for-rc2014/) are available on Tindie.  These are sold by Michael Kamprath with my permission.  However, I offer no warranty or guarantee of support.
 
-[Gerbers](https://cdn.hackaday.io/files/1590576805094688/SN76918_rev1_gerbers.zip) for the PCB are available. I highly recommend [JLCPCB](https://jlcpcb.com/) for PCB fabrication. Alternatively, boards can be ordered from the shared project on [OSH Park](https://oshpark.com/shared_projects/e6PXAnrA).
+[Gerbers](https://cdn.hackaday.io/files/1590576805094688/SN76489_rev3_gerbers.zip) for the PCB are available. I highly recommend [JLCPCB](https://jlcpcb.com/) for PCB fabrication. Alternatively, boards can be ordered from the shared project on [OSH Park](https://oshpark.com/shared_projects/hBqAD8GX).
 
 Refer to the [schematic](SN76489.pdf), the picture below, and the bill of materials below for assembly guidance.
 
@@ -29,11 +29,12 @@ All parts except for the SN76489 are available from Mouser.  The SN76489 can be 
 | J11 | 2x3 stright pin header |
 | | Jumper blocks for each jumper (9 total) |
 | J2 | CUI SJ1-3523N audio jack |
+| X1 | ECS-2100AX-3.579545MHZ DIP-8 clock oscillator |
 | C1-C3, C6-C7 | 0.1uf ceramic disc or MLCC capacitor |
 | C4, C5* | 470 uf electrolytic capacitor |
 | U2, U3** | 74HCT138 3-8 line decoder |
 | U1, U4* | TI SN76489 sound chip |
-| U5*** | 74HCT74 dual D-type flip-flop |
+| U5 | 74HCT00 quad NAND gate |
 
 Some components are optional: 
 
@@ -41,33 +42,25 @@ Some components are optional:
 
 **U3 and C2 can be omitted if you don't need tight address decoding.
 
-***U5 and C6 can be omitted if you don't need a clock divider.
-
-
 ## Configuration Jumpers
 
-### Addresses
+The recommended jumper settings select a ColecoVision compatible configuration with the the first chip at address FF and the second chip at address FB. On a real ColecoVision, all ports E0-FF are assigned to the sound chip, but all known games use port FF.  Mono output is selected since no  available software supports the second chip. To enable output from the second chip, move JP2 to the bottom position (stereo).
 
-The board uses two 138 decoders and a set of jumpers to decode the addresses for the sound chips, but the second decoder can be omitted if tight decoding is not required.  With only one decoder, each chip will occupy 32 addresses.  With two decoders, the decoding can be narrowed to a range of 4 addresses per chip.  Each chip's address can be individually configured via jumpers.  If using the second decoder, both chips must be assigned a 4 address range within the same 32 address block.
+| Jumper | Setting | Position |
+|-|-|-|
+| `J7` | A7-A5 (Left) | Bottom (111) |
+| `J9` | A7-A5 (Right) | Bottom (111) |
+| `J6` | A4-A2 (Left) | Second from bottom (111) |
+| `J8` | A4-A2 (Right) | Third from bottom (110) |
+| `J3` | A1 | Middle (1) |
+| `JP1` | A0 | Bottom (1) |
+| `JP2` | Stereo/Mono | Top (Mono) |
 
-- **J6** and **J7** configure the left chip, and **J8** and **J9** configure the right chip.
-- **J7** and **J9** select the top 3 bits of the address, with the following ranges, from top to bottom: 00-1F, 20-3F, 40-5F, 60-7F, 80-9F, A0-BF, C0-DF, E0-FF
-- **J6** and **J8** select the next 3 bits of the address. In the bottom position, the second decoder is not used, so the full 32-address range will match. Each of the 8 positions selects a range of 4 addresses: X0-X3, X4-X7, X8-XB, XC-XF, Y0-Y3, Y4-Y7, Y8-YB, and YC-YF, where X is the lower half and Y is the upper half of the 32-address range selected by **J7**. **J8** has one additional jumper in the topmost position which completely disables the right chip.
-- **JP2** selects mono (left) or stereo (right) operation.  In mono mode, the left chip is connected to both left and right channels on the audio jack.
-
-A few examples:
-
-- For the full ColecoVision address range: **J7** and **J9** in the bottom position. **J8** in the topmost position. This sets the left chip to E0-FF and disables the right chip. Set **JP2** to mono (left).
-- For ColecoVision compatibility with most games while using a tighter address range:  **J7** in the bottom position, **J9** doesn't matter, **J6** in position 8, and **J8** in position 8 (counting from the top).  This sets the left chip to FC-FF and the right chip F8-FB.  **J8** can also be set to the topmost position to disable the right chip.  Most ColecoVision games use FF to access the sound chip but it's possible some games may use ports outside of this range.  Set **JP2** to mono (left) when playing ColecoVision games or to stereo (right) if you want use software that supports both chips.
-
-### Clock
-
-A 74HCT74 is used to optionally divide the incoming clock by 2 or 4. The maximum clock frequency supported by the SN76489 is 4MHz, so the divider must be used if the incoming clock frequency is higher than that.
-
-- **JP1** selects the clock source from the RC2014 bus. The lower position selects CLK1 and the upper position selects CLK2.
-- **J11** selects the clock divider: /1 (left), /2 (middle) or /4 (right).
-
-The input clock frequency affects the frequency of the tones generated by the sound chip. If you change the input clock frequency, you will need to adjust the note tables in your software to compensate.  Refer to the SN76489 manual for details.
+- `J7` and `J9` configure A7-A5 for the left and right chips respectively.  From top to bottom, these jumpers select the following address ranges: 00-1F, 20-3F, 40-5F, 60-7F, 80-9F, A0-BF, C0-DF, E0-FF.
+- `J6` and `J8` configure A4-A2 for the left and right chips, respectively. The bottom position selects don't care for A4-A0, so the full range selected by `J7` or `J9` will be used. Each of the 8 positions above this selects a range of 4 addresses: X0-X3, X4-X7, X8-XB, XC-XF, Y0-Y3, Y4-Y7, Y8-YB, and YC-YF, where X is the lower half and Y is the upper half of the 32-address range selected by `J7`. `J8` has one additional jumper in the topmost position which completely disables the right chip.
+- `J3` configures A1 for both the left and right chips. It can be configured for 0 (bottom), 1 (middle), or don't care (top).
+- `JP1` configures A0 for both the left and right chips. It can be configured to 1 (bottom) or don't care (top).
+- `JP2` selects mono (left) or stereo (right) operation.  In mono mode, the left chip is connected to both left and right channels on the audio jack.
 
 ## Resources
 
