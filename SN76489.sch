@@ -5,8 +5,8 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
 Title "SN76489 Sound Card for RC2014"
-Date "2020-09-20"
-Rev "REV3"
+Date "2020-10-09"
+Rev "REV4"
 Comp "J.B. Langston"
 Comment1 "https://github.com/jblang/SN76489"
 Comment2 ""
@@ -600,8 +600,6 @@ F 3 "~" H 7500 1450 50  0001 C CNN
 	1    7500 1450
 	1    0    0    -1  
 $EndComp
-NoConn ~ 900  3150
-NoConn ~ 900  3050
 NoConn ~ 900  2750
 Connection ~ 6050 5350
 Connection ~ 6050 4050
@@ -1203,4 +1201,8 @@ $EndComp
 Wire Wire Line
 	3950 3600 8900 3600
 Connection ~ 6050 3400
+Text Label 900  3050 0    50   ~ 0
+A0
+Text Label 900  3150 0    50   ~ 0
+A1
 $EndSCHEMATC
