@@ -889,12 +889,12 @@ D7
 $Comp
 L 74xx:74HCT00 U5
 U 4 1 5F6589F2
-P 4000 3100
-F 0 "U5" H 4000 3425 50  0000 C CNN
-F 1 "74HCT00" H 4000 3334 50  0000 C CNN
-F 2 "Package_DIP:DIP-14_W7.62mm" H 4000 3100 50  0001 C CNN
-F 3 "http://www.ti.com/lit/gpn/sn74hct00" H 4000 3100 50  0001 C CNN
-	4    4000 3100
+P 4000 3000
+F 0 "U5" H 4000 3325 50  0000 C CNN
+F 1 "74HCT00" H 4000 3234 50  0000 C CNN
+F 2 "Package_DIP:DIP-14_W7.62mm" H 4000 3000 50  0001 C CNN
+F 3 "http://www.ti.com/lit/gpn/sn74hct00" H 4000 3000 50  0001 C CNN
+	4    4000 3000
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -1009,9 +1009,7 @@ Wire Wire Line
 	5200 3400 6050 3400
 Wire Wire Line
 	5200 2100 6050 2100
-Wire Wire Line
-	3600 2650 3700 2650
-Text Label 3600 2650 0    50   ~ 0
+Text Label 3550 3100 0    50   ~ 0
 A1
 $Comp
 L Connector_Generic:Conn_02x03_Odd_Even J3
@@ -1032,19 +1030,9 @@ Wire Wire Line
 Wire Wire Line
 	5050 3000 5550 3000
 Wire Wire Line
-	4300 3100 4550 3100
+	4300 3000 4550 3000
 Wire Wire Line
-	3700 3000 3700 2650
-Wire Wire Line
-	3700 2650 4250 2650
-Wire Wire Line
-	4250 2650 4250 3000
-Wire Wire Line
-	4250 3000 4550 3000
-Connection ~ 3700 3000
-Wire Wire Line
-	3700 3000 3700 3200
-Connection ~ 3700 2650
+	3700 2900 3700 3100
 $Comp
 L Jumper:Jumper_3_Open JP1
 U 1 1 5F79B7F6
@@ -1205,4 +1193,13 @@ Text Label 900  3050 0    50   ~ 0
 A0
 Text Label 900  3150 0    50   ~ 0
 A1
+Wire Wire Line
+	3700 3100 3700 3200
+Wire Wire Line
+	3700 3200 4550 3200
+Wire Wire Line
+	4550 3200 4550 3100
+Connection ~ 3700 3100
+Wire Wire Line
+	3550 3100 3700 3100
 $EndSCHEMATC
